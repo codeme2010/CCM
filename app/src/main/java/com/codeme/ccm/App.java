@@ -16,6 +16,7 @@ public class App extends Application {
     public static final String AUTHORITY = "com.codeme.ccm.Provider";
     public static final Uri Uri_CInfo = Uri.parse("content://" + AUTHORITY + "/CInfo");
     public static final Uri Uri_ZhangDan = Uri.parse("content://" + AUTHORITY + "/ZhangDan");
+    public static final Uri Uri_huankuan = Uri.parse("content://" + AUTHORITY + "/ZhangDan+CInfo");
     public static SQLiteDatabase db;
     @Override
     public void onCreate() {

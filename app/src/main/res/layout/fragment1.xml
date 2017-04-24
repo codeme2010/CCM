@@ -27,10 +27,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
-                android:inputType="numberDecimal"
+                android:inputType="numberSigned"
                 android:maxLines="1"
-                android:textSize="14sp"
-                tools:text="2753" />
+                android:textSize="14sp"/>
         </TableRow>
 
         <TableRow>
@@ -42,14 +41,14 @@
                 android:gravity="end|center_vertical"
                 android:text="卡代号" />
 
-            <AutoCompleteTextView
+            <com.shamanland.fonticon.FontIconEditText
                 android:id="@+id/et_卡代号"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:maxLines="1"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:iconRight="@xml/ic_right" />
         </TableRow>
 
         <TableRow>
@@ -66,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
-                android:inputType="text"
+                android:inputType="date"
                 android:maxLines="1"
                 android:textSize="14sp"
                 app:iconRight="@xml/ic_right" />
@@ -88,6 +87,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
+                android:text="0."
                 android:textSize="14sp" />
         </TableRow>
 
@@ -119,7 +119,96 @@
             android:text="记入" />
 
     </TableLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#666666" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="ID" />
 
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="刷卡额" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="卡代号" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="5"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="刷卡时间" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="费率" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="4"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="备注" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#666666" />
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"

@@ -30,9 +30,10 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
     View mMainView;
     ListView lv;
     SimpleCursorAdapter adapter;
-    Cursor cursor;
-    String selection = null;
     EditText E_卡代号, E_卡号, E_所属行, E_账户, E_固额, E_临额, E_账单日, E_还款日, E_有效期, E_CVV2;
+    Cursor cursor;
+    Uri uri;
+    String id,kadaihao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,18 +54,17 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
         E_有效期 = (EditText) mMainView.findViewById(R.id.et_有效期);
         E_CVV2 = (EditText) mMainView.findViewById(R.id.et_CVV2);
 
+        final MainActivity m = (MainActivity) getActivity();
         lv = (ListView) mMainView.findViewById(R.id.lv);
-        /*String[] uiBindFrom = { "_id","pingtai","zhanghu","huikuan","huikuanriqi","state","nianhua",
-                "benjin","shijian","beizhu"};
-        int[] uiBindTo = { R.id.id,R.id.pingtai,R.id.zhanghu,R.id.huikuan,R.id.huikuanriqi,R.id.state,R.id.nianhua,
-                R.id.benjin,R.id.shijian,R.id.beizhu};
-        getLoaderManager().initLoader(2, null, this);
+        String[] uiBindFrom = {"_id","huankuanriqi","kadaihao","huankuane","yue","mianxiqi"};
+        int[] uiBindTo = {R.id.id,R.id.还款日,R.id.卡代号,R.id.还款额,R.id.余额,R.id.免息期};
+        getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(
                 getContext(), R.layout.item_huankuan,
                 null, uiBindFrom, uiBindTo,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        lv.setAdapter(adapter);*/
-        Button bt = (Button) mMainView.findViewById(R.id.bt_录入);
+        lv.setAdapter(adapter);
+        final Button bt = (Button) mMainView.findViewById(R.id.bt_录入);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,8 +79,82 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
                 values.put("huankuanri", E_还款日.getText().toString());
                 values.put("youxiaoqi", E_有效期.getText().toString());
                 values.put("cvv2", E_CVV2.getText().toString());
-                getContext().getContentResolver().insert(App.Uri_CInfo, values);
-                Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
+                String s;
+                if (bt.getText().toString().equals("录入")){
+                    getContext().getContentResolver().insert(App.Uri_CInfo, values);
+                    s = "录入成功";
+                }
+                else {
+                    uri = Uri.withAppendedPath(App.Uri_CInfo,id);
+                    getContext().getContentResolver().update(uri,values,null,null);
+                    uri = Uri.withAppendedPath(App.Uri_ZhangDan,"group/" + kadaihao);
+                    values.clear();
+                    values.put("kadaihao", E_卡代号.getText().toString());
+                    getContext().getContentResolver().update(uri,values,null,null);
+                    s = "修改成功";
+                    bt.setText("录入");
+                }
+                update();
+                m.spa.update(1);
+                Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+            }
+        });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            final String[] item = {"本期账单已还清", "修改卡信息", "删除此卡片"};
+            int b;
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                kadaihao = ((TextView)view.findViewById(R.id.卡代号)).getText().toString();
+                id = ((TextView)view.findViewById(R.id.id)).getText().toString();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("请选择对 " + kadaihao + " 的操作")
+                        .setSingleChoiceItems(item, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                b = which;
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (b){
+                                    case 0://账单还清
+                                        ContentValues values = new ContentValues();
+                                        values.put("yihuan", "1");
+                                        getContext().getContentResolver().update(App.Uri_ZhangDan,values,kadaihao,null);//kadaihao简单传递下拉倒
+                                        break;
+                                    case 1://修改卡信息
+                                        bt.setText("修改");
+                                        String[] projection = {"kadaihao","kahao","suoshuhang","zhanghu","gue","line",
+                                                "zhangdanri","huankuanri","youxiaoqi","cvv2"};
+                                        cursor = getContext().getContentResolver().query(App.Uri_CInfo, projection,
+                                                "_id =" + id, null, null);
+                                        cursor.moveToFirst();
+                                        E_卡代号.setText(cursor.getString(0));
+                                        E_卡号.setText(cursor.getString(1));
+                                        E_所属行.setText(cursor.getString(2));
+                                        E_账户.setText(cursor.getString(3));
+                                        E_固额.setText(cursor.getString(4));
+                                        E_临额.setText(cursor.getString(5));
+                                        E_账单日.setText(cursor.getString(6));
+                                        E_还款日.setText(cursor.getString(7));
+                                        E_有效期.setText(cursor.getString(8));
+                                        E_CVV2.setText(cursor.getString(9));
+                                        break;
+                                    case 2://删除此卡片
+                                        uri = Uri.withAppendedPath(App.Uri_CInfo,id);
+                                        getContext().getContentResolver().delete(uri,null,null);
+                                        //同时删除ZhangDan里的相关信息
+                                        uri = Uri.withAppendedPath(App.Uri_ZhangDan,"group/" + kadaihao);
+                                        getContext().getContentResolver().delete(uri,null,null);
+                                        break;
+                                }
+                                m.spa.update(1);
+                                update();
+                            }
+                        })
+                        .setNegativeButton("取消",null)
+                        .show();
             }
         });
     }
@@ -97,14 +171,7 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
     }
 
     public void update() {
-/*        cursor = getContext().getContentResolver().query(App.CONTENT_URI,
-                new String[]{"sum(round(benjin*piaoli*suodingqi/36500+benjin+hongbao+(case state " +
-                        "when 0 then fanxian else 0 end),1)) as zongji"}, "state<>3" + (sch_Key == null ? "" : " and " + sch_Key), null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            tv.setText("待回合计：" + (cursor.getString(0) == null ? "0" : cursor.getString(0)));
-            cursor.close();
-        }*/
+        getLoaderManager().restartLoader(0,null,fragment0.this);
     }
 
     @Override
@@ -139,13 +206,8 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-/*        String[] projection = {"_id", "pingtai", "zhanghu", "date(shijian,'+'||suodingqi||' day') as huikuanriqi", "state","cast(round(nianhua,0)as int)||'%' as nianhua",
-                "'￥'||round(benjin*piaoli*suodingqi/36500+benjin+hongbao+(case state when 0 then fanxian else 0 end),1) as huikuan",
-                "'￥'||cast(round(benjin,0)as int)||' + '||cast(round(hongbao,0)as int)||' + '||cast(round(fanxian,0)as int)||' + '||piaoli||'%' as benjin", "shijian||' + '||suodingqi||'天' as shijian", "beizhu"};
-        selection = sch_Key==null ? (isC ? "" : "state <> 3") : sch_Key + (isC ? "" : "and state <> 3");
-        //selection = isC ? null : "state <> 3";
-        return new CursorLoader(getContext(), App.CONTENT_URI, projection, selection, null, " huikuanriqi");*/
-        return null;
+        String[] projection = {"_id","huankuanriqi","kadaihao","huankuane","yue","mianxiqi"};
+        return new CursorLoader(getContext(), App.Uri_huankuan, projection, null, null, null);
     }
 
     @Override

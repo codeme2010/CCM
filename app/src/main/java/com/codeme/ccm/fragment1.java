@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +39,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     View mMainView;
@@ -45,11 +47,12 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
     SimpleCursorAdapter adapter;
     Cursor cursor;
     String selection = null;
-    EditText E_刷卡额, E_刷卡时间, E_费率, E_备注;
-    AutoCompleteTextView E_卡代号;
+    EditText E_刷卡额, E_卡代号, E_刷卡时间, E_费率, E_备注;
     Date date;
+    String[] kadaihao;
+    int b;
+    Uri uri;
 
-    final String[] kadaihao = {""};
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -59,22 +62,21 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
         mMainView = inflater.inflate(R.layout.fragment1, (ViewGroup) getActivity().findViewById(R.id.container), false);
 
         E_刷卡额 = (EditText) mMainView.findViewById(R.id.et_刷卡额);
-        E_卡代号 = (AutoCompleteTextView) mMainView.findViewById(R.id.et_卡代号);
+        E_卡代号 = (EditText) mMainView.findViewById(R.id.et_卡代号);
         E_刷卡时间 = (EditText) mMainView.findViewById(R.id.et_时间);
         E_费率 = (EditText) mMainView.findViewById(R.id.et_费率);
         E_备注 = (EditText) mMainView.findViewById(R.id.et_备注);
 
+        final MainActivity m = (MainActivity) getActivity();
         lv = (ListView) mMainView.findViewById(R.id.lv);
-        /*String[] uiBindFrom = { "_id","pingtai","zhanghu","huikuan","huikuanriqi","state","nianhua",
-                "benjin","shijian","beizhu"};
-        int[] uiBindTo = { R.id.id,R.id.pingtai,R.id.zhanghu,R.id.huikuan,R.id.huikuanriqi,R.id.state,R.id.nianhua,
-                R.id.benjin,R.id.shijian,R.id.beizhu};
-        getLoaderManager().initLoader(2, null, this);
+        String[] uiBindFrom = {"_id", "shuakae", "kadaihao", "shijian", "feilv", "beizhu"};
+        int[] uiBindTo = {R.id.ID, R.id.刷卡额, R.id.卡代号, R.id.时间, R.id.费率, R.id.备注};
+        getLoaderManager().initLoader(1, null, this);
         adapter = new SimpleCursorAdapter(
-                getContext(), R.layout.item_huankuan,
+                getContext(), R.layout.item_zhangdan,
                 null, uiBindFrom, uiBindTo,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        lv.setAdapter(adapter);*/
+        lv.setAdapter(adapter);
         update();
 
         final SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -82,7 +84,6 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
 
         E_刷卡时间.setText(today);
         //et_时间点击显示日期
-
         E_刷卡时间.setOnClickListener(new View.OnClickListener() {
 
             @SuppressLint("WrongConstant")
@@ -105,8 +106,41 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        //应该加一个判断是否有Text，来确定弹出的选项默认值，懒得写了。
+        E_卡代号.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("请选择信用卡代号")
+                            .setSingleChoiceItems(kadaihao, 0, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    E_卡代号.setText(kadaihao[which]);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+            }
+        });
 
-        Button bt = (Button) mMainView.findViewById(R.id.bt_记入);
+        E_卡代号.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("请选择信用卡代号")
+                        .setSingleChoiceItems(kadaihao, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                E_卡代号.setText(kadaihao[which]);
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+
+        final Button bt = (Button) mMainView.findViewById(R.id.bt_记入);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,9 +149,60 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
                 values.put("kadaihao", E_卡代号.getText().toString());
                 values.put("shijian", E_刷卡时间.getText().toString());
                 values.put("feilv", E_费率.getText().toString());
+                values.put("yihuan", "0");
                 values.put("beizhu", E_备注.getText().toString());
-                getContext().getContentResolver().insert(App.Uri_ZhangDan, values);
-                Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
+                String s;
+                if (bt.getText().toString().equals("记入")) {
+                    getContext().getContentResolver().insert(App.Uri_ZhangDan, values);
+                    s = "添加成功";
+                }
+                else {
+                    getContext().getContentResolver().update(uri,values,null,null);
+                    s = "修改成功";
+                    bt.setText("记入");
+                }
+                m.spa.update(0);
+                Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+            }
+        });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String[] item = {"修改", "删除"};
+                final String _id = ((TextView)view.findViewById(R.id.ID)).getText().toString();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("请选择对ID" + _id + "的操作")
+                        .setSingleChoiceItems(item, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                b = which;
+                            }
+                        })
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                uri = Uri.withAppendedPath(App.Uri_ZhangDan,_id);
+                                if (b == 1){
+                                    getContext().getContentResolver().delete(uri,null,null);
+                                }
+                                else{
+                                    bt.setText("修改");
+                                    String[] projection = {"shuakae","kadaihao","shijian","feilv","beizhu"};
+                                    cursor = getContext().getContentResolver().query(App.Uri_ZhangDan, projection,
+                                            "_id =" + _id, null, null);
+                                    cursor.moveToFirst();
+                                    E_刷卡额.setText(cursor.getString(0));
+                                    E_卡代号.setText(cursor.getString(1));
+                                    E_刷卡时间.setText(cursor.getString(2));
+                                    E_费率.setText(cursor.getString(3));
+                                    E_备注.setText(cursor.getString(4));
+                                }
+                                update();
+                                m.spa.update(0);
+                            }
+                        })
+                        .setNegativeButton("取消",null)
+                        .show();
             }
         });
     }
@@ -126,27 +211,26 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-
         ViewGroup p = (ViewGroup) mMainView.getParent();
         if (p != null) {
             p.removeAllViewsInLayout();
         }
-
         return mMainView;
     }
 
     public void update() {
         cursor = getContext().getContentResolver().query(App.Uri_CInfo, new String[]{"kadaihao"}, null, null, null);
         if (cursor != null) {
-            cursor.moveToFirst();
-            kadaihao[0] = cursor.getString(0);
-            for (int i = 1; i < cursor.getCount();i++){
-                if (!cursor.isLast())cursor.moveToNext();
-                Arrays.asList(kadaihao).add(cursor.getString(0));
+            int count = cursor.getCount();
+            if (count > 0) {
+                kadaihao = new String[count];
+                cursor.moveToFirst();
+                kadaihao[0] = cursor.getString(0);
+                for (int i = 1; i < cursor.getCount(); i++) {
+                    if (!cursor.isLast()) cursor.moveToNext();
+                    kadaihao[i] = cursor.getString(0);
+                }
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_dropdown_item_1line, kadaihao);
-            E_卡代号.setAdapter(adapter);
             cursor.close();
         }
     }
@@ -183,13 +267,9 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-/*        String[] projection = {"_id", "pingtai", "zhanghu", "date(shijian,'+'||suodingqi||' day') as huikuanriqi", "state","cast(round(nianhua,0)as int)||'%' as nianhua",
-                "'￥'||round(benjin*piaoli*suodingqi/36500+benjin+hongbao+(case state when 0 then fanxian else 0 end),1) as huikuan",
-                "'￥'||cast(round(benjin,0)as int)||' + '||cast(round(hongbao,0)as int)||' + '||cast(round(fanxian,0)as int)||' + '||piaoli||'%' as benjin", "shijian||' + '||suodingqi||'天' as shijian", "beizhu"};
-        selection = sch_Key==null ? (isC ? "" : "state <> 3") : sch_Key + (isC ? "" : "and state <> 3");
-        //selection = isC ? null : "state <> 3";
-        return new CursorLoader(getContext(), App.CONTENT_URI, projection, selection, null, " huikuanriqi");*/
-        return null;
+        String[] projection = {"_id", "shuakae", "kadaihao", "shijian", "feilv", "beizhu"};
+        selection = "yihuan=0";
+        return new CursorLoader(getContext(), App.Uri_ZhangDan, projection, selection, null, "kadaihao asc,shijian desc");
     }
 
     @Override

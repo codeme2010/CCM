@@ -24,13 +24,13 @@
             <EditText
                 android:id="@+id/et_卡代号"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.7"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="建设-1" />
+                android:hint="建设0" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -42,13 +42,13 @@
             <EditText
                 android:id="@+id/et_卡号"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="3.3"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="5324582012335605" />
+                android:hint="12位卡号" />
         </TableRow>
 
         <TableRow>
@@ -64,13 +64,13 @@
             <EditText
                 android:id="@+id/et_所属行"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.7"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="建设银行" />
+                android:hint="建设银行" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -82,13 +82,13 @@
             <EditText
                 android:id="@+id/et_账户"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="3.3"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="0" />
+                android:hint="0" />
         </TableRow>
 
         <TableRow>
@@ -104,13 +104,13 @@
             <EditText
                 android:id="@+id/et_固额"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.7"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="25000" />
+                android:hint="25000" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -122,13 +122,13 @@
             <EditText
                 android:id="@+id/et_临额"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="3.3"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="23000" />
+                android:hint="23000" />
         </TableRow>
 
         <TableRow>
@@ -144,13 +144,13 @@
             <EditText
                 android:id="@+id/et_账单日"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.7"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="28" />
+                android:hint="28" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -162,13 +162,13 @@
             <EditText
                 android:id="@+id/et_还款日"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="3.3"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="7" />
+                android:hint="7" />
         </TableRow>
 
         <TableRow>
@@ -184,13 +184,13 @@
             <EditText
                 android:id="@+id/et_有效期"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.7"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="08/22" />
+                android:hint="0822" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -202,13 +202,13 @@
             <EditText
                 android:id="@+id/et_CVV2"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="3.3"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:textSize="14sp"
-                tools:text="333" />
+                android:hint="333" />
         </TableRow>
 
         <Button
@@ -220,6 +220,74 @@
             android:text="录入" />
 
     </TableLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#666666" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="还款日期"
+            android:maxLines="1"/>
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="还款额"
+            android:maxLines="1" />
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="卡代号"
+            android:maxLines="1" />
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="可用额度"
+            android:maxLines="1" />
+        <View
+            android:layout_width="1px"
+            android:layout_height="25dp"
+            android:background="#666666" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="免息期"
+            android:maxLines="1" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#666666" />
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"

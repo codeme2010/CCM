@@ -3,65 +3,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/还款日"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="12月22日"
-            android:maxLines="1"/>
-        <View
-            android:layout_width="1px"
-            android:layout_height="25dp"
-            android:background="#666666" />
-        <TextView
-            android:id="@+id/还款额"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="33333"
-            android:maxLines="1" />
-        <View
-            android:layout_width="1px"
-            android:layout_height="25dp"
-            android:background="#666666" />
-        <TextView
-            android:id="@+id/卡代号"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="建设-3"
-            android:maxLines="1" />
-        <View
-            android:layout_width="1px"
-            android:layout_height="25dp"
-            android:background="#666666" />
-        <TextView
-            android:id="@+id/余额"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="33333"
-            android:maxLines="1" />
-        <View
-            android:layout_width="1px"
-            android:layout_height="25dp"
-            android:background="#666666" />
-        <TextView
-            android:id="@+id/免息期"
-            android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="55天"
-            android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="0" />
+
+    <TextView
+        android:id="@+id/还款日"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        tools:text="12月22日" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="25dp"
+        android:background="#666666" />
+
+    <TextView
+        android:id="@+id/还款额"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        tools:text="33333" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="25dp"
+        android:background="#666666" />
+
+    <TextView
+        android:id="@+id/卡代号"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        tools:text="建设-3" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="25dp"
+        android:background="#666666" />
+
+    <TextView
+        android:id="@+id/余额"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        tools:text="33333" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="25dp"
+        android:background="#666666" />
+
+    <TextView
+        android:id="@+id/免息期"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        tools:text="55天" />
 </LinearLayout>

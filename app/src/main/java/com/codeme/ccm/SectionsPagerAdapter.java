@@ -46,9 +46,10 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        String name = makeFragmentName(container.getId(), (int) getItemId(position));
-        if(mTagList.size()==0||!mTagList.toString().contains(name)){
-            mTagList.add(position, name);
+        if (mTagList.size()==0) {
+            for (int i = 0; i < 2; i++) {
+                mTagList.add(i, "android:switcher:" + container.getId() + ":" + i);
+            }
         }
         return super.instantiateItem(container, position);
     }
@@ -59,20 +60,14 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         return super.getItemPosition(object);
     }
 
-    // FragmentPageAdapter源码里给 Fragment 生成标签的方法
-    private String makeFragmentName(int viewId, int index) {
-        Log.e("instantiateItem: ", viewId + ":" + index + "****" +mTagList.size());
-        return "android:switcher:" + viewId + ":" + index;
-    }
-
     public void update(int position){
         try {
         Fragment fragment = fm.findFragmentByTag(mTagList.get(position));
             switch (position){
                 case 0:
-//                    ((fragment0)fragment).update();break;
-                case 2:
-//                    ((fragment2)fragment).update();break;
+                    ((fragment0)fragment).update();break;
+                case 1:
+                    ((fragment1)fragment).update();break;
             }
         }
         catch (Exception e){

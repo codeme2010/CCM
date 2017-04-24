@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 public class Provider extends ContentProvider {
     static final int DIR_CInfo = 0;
@@ -40,6 +41,12 @@ public class Provider extends ContentProvider {
         Cursor cursor;
         String groupBy = null;
         switch (uriMatcher.match(uri)) {
+            case DIR_CInfo:
+                queryBuilder.setTables(App.TABLE_CInfo);
+                break;
+            case DIR_ZhangDan:
+                queryBuilder.setTables(App.TABLE_ZhangDan);
+                break;
             case ITEM_CInfo:
                 queryBuilder.setTables(App.TABLE_CInfo);
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
@@ -57,7 +64,32 @@ public class Provider extends ContentProvider {
                 groupBy = uri.getPathSegments().get(2);
                 break;
             default:
-                break;
+                queryBuilder.setTables(
+                        "(select t1._id,case(strftime('%d','now')-t1.huankuanri>0)\n" +
+                                "when 1 then STRFTIME ('%m-%d',date('now','start of month','+1 month','+'|| t1.huankuanri ||' day','-1 day')) \n" +
+                                "else STRFTIME ('%m-%d',date('now','start of month','+'|| t1.huankuanri ||' day','-1 day')) end as huankuanriqi,t1.kadaihao, case when t2.huankuane isnull then '无需还款' else t2.huankuane end as huankuane, case when t3.yue is null then t3.zonge else t3.yue end as yue,t4.mianxiqi\n" +
+                                "from CInfo t1 left join\n" +
+                                "(SELECT kadaihao,SUM ([shuakae]) as huankuane FROM   [ZhangDan]\n" +
+                                "WHERE  [yihuan] = 0 AND [shijian] < (\n" +
+                                "SELECT CASE (CAST (([zhangdanri] < [huankuanri]) AS [char]) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] >= 0) AS [char]) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] >= 0) AS [char])) \n" +
+                                "WHEN '110' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') \n" +
+                                "WHEN '000' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day', '-1 month') \n" +
+                                "WHEN '011' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') ELSE DATE ('now') END\n" +
+                                "FROM   [CInfo] where CInfo.kadaihao=ZhangDan.kadaihao)\n" +
+                                "GROUP  BY [kadaihao]) t2 on t1.kadaihao=t2.kadaihao left join\n" +
+                                "(select c.kadaihao k,gue+line as zonge, t.yue from CInfo c left join\n" +
+                                "(select c.kadaihao as k, c.gue+c.line-SUM (z.shuakae) AS yue from CInfo c,Zhangdan z WHERE  z.yihuan = 0 AND k = z.kadaihao GROUP  BY k) t on c.kadaihao=t.k) t3 on t1.kadaihao=t3.k left join\n" +
+                                "(select kadaihao, case(\n" +
+                                "cast((huankuanri-STRFTIME ('%d', 'now')>=0) as char)\n" +
+                                "|| cast((zhangdanri-STRFTIME ('%d', 'now')>=0) as char))\n" +
+                                "when '11' then huankuanri-STRFTIME ('%d', 'now')\n" +
+                                "when '00' then julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+2 month'))-julianday(date('now'))\n" +
+                                "else julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+1 month'))-julianday(date('now')) end as mianxiqi\n" +
+                                "from CInfo) t4 on t1.kadaihao=t4.kadaihao\n" +
+                                "order by huankuanriqi)"
+                );
         }
         cursor = queryBuilder.query(App.db, projection, selection, selectionArgs, groupBy, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -94,11 +126,14 @@ public class Provider extends ContentProvider {
         String id = uri.getLastPathSegment();
         int count;
         switch (uriMatcher.match(uri)) {
-            case DIR_CInfo:
+            case ITEM_CInfo:
                 count = App.db.delete(App.TABLE_CInfo, "_id=" + id, null);
                 break;
-            case DIR_ZhangDan:
+            case ITEM_ZhangDan:
                 count = App.db.delete(App.TABLE_ZhangDan, "_id=" + id, null);
+                break;
+            case group_ZhangDan:
+                count = App.db.delete(App.TABLE_ZhangDan, "kadaihao='" + id + "'", null);
                 break;
             default:
                 return -1;
@@ -109,14 +144,31 @@ public class Provider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        String id = uri.getLastPathSegment();
         int count;
+        String id;
         switch (uriMatcher.match(uri)) {
-            case DIR_CInfo:
+            case ITEM_CInfo:
+                id = uri.getLastPathSegment();
                 count = App.db.update(App.TABLE_CInfo, values, "_id=" + id, null);
                 break;
-            case DIR_ZhangDan:
+            case ITEM_ZhangDan:
+                id = uri.getLastPathSegment();
                 count = App.db.update(App.TABLE_ZhangDan, values, "_id=" + id, null);
+                break;
+            case group_ZhangDan:
+                id = uri.getLastPathSegment();
+                count = App.db.update(App.TABLE_ZhangDan, values, "kadaihao='" + id + "'", null);
+                break;
+            case DIR_ZhangDan:
+                id = selection;//kadaihao简单传递下拉倒
+                count = App.db.update(App.TABLE_ZhangDan, values, "kadaihao = '" + id + "' AND [yihuan] = 0 AND [shijian] < (\n" +
+                        "SELECT CASE (CAST (([zhangdanri] < [huankuanri]) AS [char]) \n" +
+                        "|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] >= 0) AS [char]) \n" +
+                        "|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] >= 0) AS [char])) \n" +
+                        "WHEN '110' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') \n" +
+                        "WHEN '000' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day', '-1 month') \n" +
+                        "WHEN '011' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') ELSE DATE ('now') END\n" +
+                        "FROM   [CInfo] where CInfo.kadaihao=ZhangDan.kadaihao)", null);
                 break;
             default:
                 return -1;
