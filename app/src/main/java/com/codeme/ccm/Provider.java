@@ -67,13 +67,13 @@ public class Provider extends ContentProvider {
                 queryBuilder.setTables(
                         "(select t1._id,case(strftime('%d','now')-t1.huankuanri>0)\n" +
                                 "when 1 then STRFTIME ('%m-%d',date('now','start of month','+1 month','+'|| t1.huankuanri ||' day','-1 day')) \n" +
-                                "else STRFTIME ('%m-%d',date('now','start of month','+'|| t1.huankuanri ||' day','-1 day')) end as huankuanriqi,t1.kadaihao, case when t2.huankuane isnull then '无需还款' else t2.huankuane end as huankuane, case when t3.yue is null then t3.zonge else t3.yue end as yue,t4.mianxiqi\n" +
+                                "else STRFTIME ('%m-%d',date('now','start of month','+'|| t1.huankuanri ||' day','-1 day')) end as huankuanriqi,t1.kadaihao, case when t2.huankuane isnull then '无需还款' else round(t2.huankuane,2) end as huankuane, case when t3.yue is null then t3.zonge else round(t3.yue,2) end as yue,t4.mianxiqi\n" +
                                 "from CInfo t1 left join\n" +
                                 "(SELECT kadaihao,SUM ([shuakae]) as huankuane FROM   [ZhangDan]\n" +
                                 "WHERE  [yihuan] = 0 AND [shijian] < (\n" +
                                 "SELECT CASE (CAST (([zhangdanri] < [huankuanri]) AS [char]) \n" +
-                                "|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] >= 0) AS [char]) \n" +
-                                "|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] >= 0) AS [char])) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] > 0) AS [char]) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] > 0) AS [char])) \n" +
                                 "WHEN '110' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') \n" +
                                 "WHEN '000' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day', '-1 month') \n" +
                                 "WHEN '011' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') ELSE DATE ('now') END\n" +
