@@ -81,11 +81,11 @@ public class Provider extends ContentProvider {
                                 "GROUP  BY [kadaihao]) t2 on t1.kadaihao=t2.kadaihao left join\n" +
                                 "(select c.kadaihao k,gue+line as zonge, t.yue from CInfo c left join\n" +
                                 "(select c.kadaihao as k, c.gue+c.line-SUM (z.shuakae) AS yue from CInfo c,Zhangdan z WHERE  z.yihuan = 0 AND k = z.kadaihao GROUP  BY k) t on c.kadaihao=t.k) t3 on t1.kadaihao=t3.k left join\n" +
-                                "(select kadaihao, case(\n" +
-                                "cast((huankuanri-STRFTIME ('%d', 'now')>=0) as char)\n" +
-                                "|| cast((zhangdanri-STRFTIME ('%d', 'now')>=0) as char))\n" +
-                                "when '11' then huankuanri-STRFTIME ('%d', 'now')\n" +
-                                "when '00' then julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+2 month'))-julianday(date('now'))\n" +
+                                "(select kadaihao, case(CAST (([zhangdanri] < [huankuanri]) AS [char]) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] > 0) AS [char]) \n" +
+                                "|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] > 0) AS [char]))\n" +
+                                "when '100' then huankuanri-STRFTIME ('%d', 'now')\n" +
+                                "when '011' then julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+2 month'))-julianday(date('now'))\n" +
                                 "else julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+1 month'))-julianday(date('now')) end as mianxiqi\n" +
                                 "from CInfo) t4 on t1.kadaihao=t4.kadaihao\n" +
                                 "order by huankuanriqi)"
