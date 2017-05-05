@@ -230,6 +230,9 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
                     if (!cursor.isLast()) cursor.moveToNext();
                     kadaihao[i] = cursor.getString(0);
                 }
+                if (App.DEBUG){
+                    Toast.makeText(getActivity(), "DEBUG:更新成功", Toast.LENGTH_SHORT).show();
+                }
             }
             cursor.close();
         }

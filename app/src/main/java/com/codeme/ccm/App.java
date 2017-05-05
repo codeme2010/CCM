@@ -18,6 +18,7 @@ public class App extends Application {
     public static final Uri Uri_ZhangDan = Uri.parse("content://" + AUTHORITY + "/ZhangDan");
     public static final Uri Uri_huankuan = Uri.parse("content://" + AUTHORITY + "/ZhangDan+CInfo");
     public static SQLiteDatabase db;
+    public static boolean DEBUG = true;
     @Override
     public void onCreate() {
         super.onCreate();

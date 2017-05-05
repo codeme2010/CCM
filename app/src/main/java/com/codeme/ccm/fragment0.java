@@ -120,8 +120,8 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
                                 switch (b){
                                     case 0://账单还清
                                         ContentValues values = new ContentValues();
-                                        values.put("yihuan", "1");
-                                        getContext().getContentResolver().update(App.Uri_ZhangDan,values,kadaihao,null);//kadaihao简单传递下拉倒
+                                        values.put("yihuan", "1");//kadaihao简单传递下拉倒
+                                        if (getContext().getContentResolver().update(App.Uri_ZhangDan,values,kadaihao,null)!=-1) {Toast.makeText(getActivity(), kadaihao + " 的账单已还清", Toast.LENGTH_SHORT).show();}
                                         break;
                                     case 1://修改卡信息
                                         bt.setText("修改");
@@ -146,7 +146,7 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
                                         getContext().getContentResolver().delete(uri,null,null);
                                         //同时删除ZhangDan里的相关信息
                                         uri = Uri.withAppendedPath(App.Uri_ZhangDan,"group/" + kadaihao);
-                                        getContext().getContentResolver().delete(uri,null,null);
+                                        if (getContext().getContentResolver().delete(uri,null,null)!=-1) {Toast.makeText(getActivity(), "卡片 " + kadaihao + " 删除成功", Toast.LENGTH_SHORT).show();}
                                         break;
                                 }
                                 m.spa.update(1);
