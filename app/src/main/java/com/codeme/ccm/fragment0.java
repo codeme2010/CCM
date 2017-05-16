@@ -11,29 +11,37 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    View mMainView;
-    ListView lv;
-    SimpleCursorAdapter adapter;
-    EditText E_卡代号, E_卡号, E_所属行, E_账户, E_固额, E_临额, E_账单日, E_还款日, E_有效期, E_CVV2;
-    Cursor cursor;
-    Uri uri;
-    String id,kadaihao;
+    private View mMainView;
+    private ListView lv;
+    private SimpleCursorAdapter adapter;
+    private EditText E_卡代号;
+    private EditText E_卡号;
+    private EditText E_所属行;
+    private EditText E_账户;
+    private EditText E_固额;
+    private EditText E_临额;
+    private EditText E_账单日;
+    private EditText E_还款日;
+    private EditText E_有效期;
+    private EditText E_CVV2;
+    private Cursor cursor;
+    private Uri uri;
+    private String id;
+    private String kadaihao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,18 +114,55 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 kadaihao = ((TextView)view.findViewById(R.id.卡代号)).getText().toString();
                 id = ((TextView)view.findViewById(R.id.id)).getText().toString();
-                new AlertDialog.Builder(getActivity())
+                PopupMenu p = new PopupMenu(getContext(),view.findViewById(R.id.卡代号));
+                p.getMenuInflater().inflate(R.menu.menu0,p.getMenu());
+                p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.huanqing://账单还清
+                                ContentValues values = new ContentValues();
+                                values.put("yihuan", "1");//kadaihao简单传递下拉倒
+                                if (getContext().getContentResolver().update(App.Uri_ZhangDan,values,kadaihao,null)!=-1) {Toast.makeText(getActivity(), kadaihao + " 的账单已还清", Toast.LENGTH_SHORT).show();}
+                                break;
+                            case R.id.xiugai0://修改卡信息
+                                bt.setText("修改");
+                                String[] projection = {"kadaihao","kahao","suoshuhang","zhanghu","gue","line",
+                                        "zhangdanri","huankuanri","youxiaoqi","cvv2"};
+                                cursor = getContext().getContentResolver().query(App.Uri_CInfo, projection,
+                                        "_id =" + id, null, null);
+                                cursor.moveToFirst();
+                                E_卡代号.setText(cursor.getString(0));
+                                E_卡号.setText(cursor.getString(1));
+                                E_所属行.setText(cursor.getString(2));
+                                E_账户.setText(cursor.getString(3));
+                                E_固额.setText(cursor.getString(4));
+                                E_临额.setText(cursor.getString(5));
+                                E_账单日.setText(cursor.getString(6));
+                                E_还款日.setText(cursor.getString(7));
+                                E_有效期.setText(cursor.getString(8));
+                                E_CVV2.setText(cursor.getString(9));
+                                break;
+                            case R.id.shanchu0://删除此卡片
+                                uri = Uri.withAppendedPath(App.Uri_CInfo,id);
+                                getContext().getContentResolver().delete(uri,null,null);
+                                //同时删除ZhangDan里的相关信息
+                                uri = Uri.withAppendedPath(App.Uri_ZhangDan,"group/" + kadaihao);
+                                if (getContext().getContentResolver().delete(uri,null,null)!=-1) {Toast.makeText(getActivity(), "卡片 " + kadaihao + " 删除成功", Toast.LENGTH_SHORT).show();}
+                                break;
+                        }
+                        m.spa.update(1);
+                        update();
+                        return true;
+                    }
+                });
+                p.show();
+                /*new AlertDialog.Builder(getActivity())
                         .setTitle("请选择对 " + kadaihao + " 的操作")
                         .setSingleChoiceItems(item, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                b = which;
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (b){
+                                switch (which){
                                     case 0://账单还清
                                         ContentValues values = new ContentValues();
                                         values.put("yihuan", "1");//kadaihao简单传递下拉倒
@@ -154,7 +199,7 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
                             }
                         })
                         .setNegativeButton("取消",null)
-                        .show();
+                        .show();*/
             }
         });
     }

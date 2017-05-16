@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/huanqing"
+        android:title="本期账单已还清" />
+    <item
+        android:id="@+id/xiugai0"
+        android:title="修改卡片信息" />
+    <item
+        android:id="@+id/shanchu0"
+        android:title="删除此卡片" />
+</menu>

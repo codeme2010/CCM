@@ -13,45 +13,41 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    View mMainView;
-    ListView lv;
-    SimpleCursorAdapter adapter;
-    Cursor cursor;
-    String selection = null;
-    EditText E_刷卡额, E_卡代号, E_刷卡时间, E_费率, E_备注;
-    Date date;
-    String[] kadaihao;
+    private View mMainView;
+    private ListView lv;
+    private SimpleCursorAdapter adapter;
+    private Cursor cursor;
+    private String selection = null;
+    private EditText E_刷卡额;
+    private EditText E_卡代号;
+    private EditText E_刷卡时间;
+    private EditText E_费率;
+    private EditText E_备注;
+    private Date date;
+    private String[] kadaihao;
     int b;
-    Uri uri;
+    private Uri uri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,19 +166,41 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final String[] item = {"修改", "删除"};
                 final String _id = ((TextView)view.findViewById(R.id.ID)).getText().toString();
-                new AlertDialog.Builder(getActivity())
+                PopupMenu p = new PopupMenu(getContext(),view.findViewById(R.id.时间));
+                p.getMenuInflater().inflate(R.menu.menu1,p.getMenu());
+                p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.shanchu1:
+                                getContext().getContentResolver().delete(uri,null,null);
+                                break;
+                            case R.id.xiugai1:
+                                bt.setText("修改");
+                                String[] projection = {"shuakae","kadaihao","shijian","feilv","beizhu"};
+                                cursor = getContext().getContentResolver().query(App.Uri_ZhangDan, projection,
+                                        "_id =" + _id, null, null);
+                                cursor.moveToFirst();
+                                E_刷卡额.setText(cursor.getString(0));
+                                E_卡代号.setText(cursor.getString(1));
+                                E_刷卡时间.setText(cursor.getString(2));
+                                E_费率.setText(cursor.getString(3));
+                                E_备注.setText(cursor.getString(4));
+                                break;
+                        }
+                        update();
+                        m.spa.update(0);
+                        return true;
+                    }
+                });
+                p.show();
+                /*new AlertDialog.Builder(getActivity())
                         .setTitle("请选择对ID" + _id + "的操作")
                         .setSingleChoiceItems(item, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                b = which;
-                            }
-                        })
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
                                 uri = Uri.withAppendedPath(App.Uri_ZhangDan,_id);
-                                if (b == 1){
+                                if (which == 1){
                                     getContext().getContentResolver().delete(uri,null,null);
                                 }
                                 else{
@@ -202,7 +220,7 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
                             }
                         })
                         .setNegativeButton("取消",null)
-                        .show();
+                        .show();*/
             }
         });
     }

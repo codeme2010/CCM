@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    List<Fragment> fragmentList = null;
-    ArrayList<String> titleList = null;
+    private List<Fragment> fragmentList = null;
+    private ArrayList<String> titleList = null;
     SectionsPagerAdapter spa;
 
     @Override

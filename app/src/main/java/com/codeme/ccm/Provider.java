@@ -8,16 +8,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 public class Provider extends ContentProvider {
-    static final int DIR_CInfo = 0;
-    static final int ITEM_CInfo = 1;
-    static final int group_CInfo = 2;
-    static final int DIR_ZhangDan = 3;
-    static final int ITEM_ZhangDan = 4;
-    static final int group_ZhangDan = 5;
-    static UriMatcher uriMatcher;
+    private static final int DIR_CInfo = 0;
+    private static final int ITEM_CInfo = 1;
+    private static final int group_CInfo = 2;
+    private static final int DIR_ZhangDan = 3;
+    private static final int ITEM_ZhangDan = 4;
+    private static final int group_ZhangDan = 5;
+    private static final UriMatcher uriMatcher;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
