@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private List<Fragment> fragmentList = null;
-    private ArrayList<String> titleList = null;
     SectionsPagerAdapter spa;
 
     @Override
@@ -26,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
         if (openDatabase())
             App.db = SQLiteDatabase.openOrCreateDatabase(App.databaseFilename, null);
 
-        fragmentList = new ArrayList<>();
+        List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new fragment0());
         fragmentList.add(new fragment1());
 
-        titleList = new ArrayList<>();
+        ArrayList<String> titleList = new ArrayList<>();
         titleList.add("还款明细");
         titleList.add("记账");
 

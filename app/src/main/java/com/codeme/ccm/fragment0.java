@@ -1,7 +1,6 @@
 package com.codeme.ccm;
 
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +24,6 @@ import android.widget.Toast;
 
 public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private View mMainView;
-    private ListView lv;
     private SimpleCursorAdapter adapter;
     private EditText E_卡代号;
     private EditText E_卡号;
@@ -63,7 +60,7 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
         E_CVV2 = (EditText) mMainView.findViewById(R.id.et_CVV2);
 
         final MainActivity m = (MainActivity) getActivity();
-        lv = (ListView) mMainView.findViewById(R.id.lv);
+        ListView lv = (ListView) mMainView.findViewById(R.id.lv);
         String[] uiBindFrom = {"_id","huankuanriqi","kadaihao","huankuane","yue","mianxiqi"};
         int[] uiBindTo = {R.id.id,R.id.还款日,R.id.卡代号,R.id.还款额,R.id.余额,R.id.免息期};
         getLoaderManager().initLoader(0, null, this);
@@ -108,8 +105,6 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
             }
         });
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            final String[] item = {"本期账单已还清", "修改卡信息", "删除此卡片"};
-            int b;
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 kadaihao = ((TextView)view.findViewById(R.id.卡代号)).getText().toString();
@@ -217,36 +212,6 @@ public class fragment0 extends Fragment implements LoaderManager.LoaderCallbacks
 
     public void update() {
         getLoaderManager().restartLoader(0,null,fragment0.this);
-    }
-
-    @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
     }
 
     @Override

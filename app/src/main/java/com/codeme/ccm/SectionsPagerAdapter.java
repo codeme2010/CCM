@@ -54,13 +54,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         return super.instantiateItem(container, position);
     }
 
-    @Override
-    public int getItemPosition(Object object)
-    {
-        return super.getItemPosition(object);
-    }
-
-    public void update(int position){
+    void update(int position){
         try {
         Fragment fragment = fm.findFragmentByTag(mTagList.get(position));
             switch (position){

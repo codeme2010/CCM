@@ -35,10 +35,8 @@ import java.util.Locale;
 
 public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private View mMainView;
-    private ListView lv;
     private SimpleCursorAdapter adapter;
     private Cursor cursor;
-    private String selection = null;
     private EditText E_刷卡额;
     private EditText E_卡代号;
     private EditText E_刷卡时间;
@@ -46,8 +44,7 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
     private EditText E_备注;
     private Date date;
     private String[] kadaihao;
-    int b;
-    private Uri uri;
+    private final Uri uri = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +61,7 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
         E_备注 = (EditText) mMainView.findViewById(R.id.et_备注);
 
         final MainActivity m = (MainActivity) getActivity();
-        lv = (ListView) mMainView.findViewById(R.id.lv);
+        ListView lv = (ListView) mMainView.findViewById(R.id.lv);
         String[] uiBindFrom = {"_id", "shuakae", "kadaihao", "shijian", "feilv", "beizhu"};
         int[] uiBindTo = {R.id.ID, R.id.刷卡额, R.id.卡代号, R.id.时间, R.id.费率, R.id.备注};
         getLoaderManager().initLoader(1, null, this);
@@ -257,39 +254,9 @@ public class fragment1 extends Fragment implements LoaderManager.LoaderCallbacks
     }
 
     @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {"_id", "shuakae", "kadaihao", "shijian", "feilv", "beizhu"};
-        selection = "yihuan=0";
+        String selection = "yihuan=0";
         return new CursorLoader(getContext(), App.Uri_ZhangDan, projection, selection, null, "kadaihao asc,shijian desc");
     }
 
