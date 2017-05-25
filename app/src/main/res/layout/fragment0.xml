@@ -21,7 +21,7 @@
                 android:text="卡代号" />
 
             <EditText
-                android:id="@+id/et_卡代号"
+                android:id="@+id/et_kadaihao"
                 android:layout_width="0dp"
                 android:layout_weight="2.7"
                 android:layout_height="match_parent"
@@ -39,7 +39,7 @@
                 android:text="卡号" />
 
             <EditText
-                android:id="@+id/et_卡号"
+                android:id="@+id/et_kahao"
                 android:layout_width="0dp"
                 android:layout_weight="3.3"
                 android:layout_height="match_parent"
@@ -61,7 +61,7 @@
                 android:text="所属行" />
 
             <EditText
-                android:id="@+id/et_所属行"
+                android:id="@+id/et_suoshuhang"
                 android:layout_width="0dp"
                 android:layout_weight="2.7"
                 android:layout_height="match_parent"
@@ -79,7 +79,7 @@
                 android:text="账户" />
 
             <EditText
-                android:id="@+id/et_账户"
+                android:id="@+id/et_zhanghu"
                 android:layout_width="0dp"
                 android:layout_weight="3.3"
                 android:layout_height="match_parent"
@@ -101,7 +101,7 @@
                 android:text="固额" />
 
             <EditText
-                android:id="@+id/et_固额"
+                android:id="@+id/et_gue"
                 android:layout_width="0dp"
                 android:layout_weight="2.7"
                 android:layout_height="match_parent"
@@ -119,7 +119,7 @@
                 android:text="临额" />
 
             <EditText
-                android:id="@+id/et_临额"
+                android:id="@+id/et_line"
                 android:layout_width="0dp"
                 android:layout_weight="3.3"
                 android:layout_height="match_parent"
@@ -141,7 +141,7 @@
                 android:text="账单日" />
 
             <EditText
-                android:id="@+id/et_账单日"
+                android:id="@+id/et_zhangdanri"
                 android:layout_width="0dp"
                 android:layout_weight="2.7"
                 android:layout_height="match_parent"
@@ -159,7 +159,7 @@
                 android:text="还款日" />
 
             <EditText
-                android:id="@+id/et_还款日"
+                android:id="@+id/et_huankuanri"
                 android:layout_width="0dp"
                 android:layout_weight="3.3"
                 android:layout_height="match_parent"
@@ -181,7 +181,7 @@
                 android:text="有效期" />
 
             <EditText
-                android:id="@+id/et_有效期"
+                android:id="@+id/et_youxiaoqi"
                 android:layout_width="0dp"
                 android:layout_weight="2.7"
                 android:layout_height="match_parent"
@@ -211,7 +211,7 @@
         </TableRow>
 
         <Button
-            android:id="@+id/bt_录入"
+            android:id="@+id/bt_luru"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
