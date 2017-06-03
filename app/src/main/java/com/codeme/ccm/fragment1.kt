@@ -14,10 +14,12 @@ import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.PopupMenu
+import android.widget.SimpleCursorAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment1.*
-import kotlinx.android.synthetic.main.fragment1.view.*
 import kotlinx.android.synthetic.main.item_zhangdan.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat

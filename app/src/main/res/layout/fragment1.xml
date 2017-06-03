@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -40,14 +39,13 @@
                 android:gravity="end|center_vertical"
                 android:text="卡代号" />
 
-            <com.shamanland.fonticon.FontIconEditText
+            <EditText
                 android:id="@+id/et_kadaihao1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:textSize="14sp"
-                app:iconRight="@xml/ic_right" />
+                android:textSize="14sp" />
         </TableRow>
 
         <TableRow>
@@ -59,15 +57,14 @@
                 android:gravity="end|center_vertical"
                 android:text="刷卡时间" />
 
-            <com.shamanland.fonticon.FontIconEditText
+            <EditText
                 android:id="@+id/et_shijian1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:inputType="date"
                 android:maxLines="1"
-                android:textSize="14sp"
-                app:iconRight="@xml/ic_right" />
+                android:textSize="14sp" />
         </TableRow>
 
         <TableRow>

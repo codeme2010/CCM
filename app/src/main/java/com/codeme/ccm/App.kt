@@ -4,13 +4,10 @@ import android.app.Application
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 
-import com.shamanland.fonticon.FontIconTypefaceHolder
-
-
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
-        FontIconTypefaceHolder.init(assets, "fontawesome-webfont.ttf")
     }
 
     companion object {
