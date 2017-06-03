@@ -1,0 +1,65 @@
+﻿insert into CInfo (kadaihao,kahao,suoshuhang,zhanghu,gue,line,zhangdanri,huankuanri,youxiaoqi,cvv2)values("zhaoshang-0","2345678987654321","招商银行","0","18000","12000","8","28","0823","765")
+
+insert into ZhangDan (shuakae,kadaihao,shijian,feilv,yihuan)values("2000","zhaoshang-0","2017/4/20","0.3","0")
+
+huankuanri:
+select huankuanri,case(strftime('%d','now')-huankuanri>0) 
+when 1 then date('now','start of month','+1 month','+'|| huankuanri ||' day','-1 day') 
+else date('now','start of month','+'|| huankuanri ||' day','-1 day')  end from CInfo
+
+huankuane:
+SELECT SUM ([shuakae]) FROM   [ZhangDan]
+WHERE  [yihuan] = 0 AND [shijian] < (
+SELECT CASE (CAST (([zhangdanri] < [huankuanri]) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now') - [zhangdanri] >= 0) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now') - [huankuanri] >= 0) AS [char])) 
+WHEN '110' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') 
+WHEN '000' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day', '-1 month') 
+WHEN '011' THEN DATE ('now', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') ELSE DATE ('now') END
+FROM   [CInfo] where CInfo.kadaihao=ZhangDan.kadaihao
+       )
+GROUP  BY [kadaihao];
+
+kadaihao:
+
+yue:
+SELECT [c].[gue] + [c].[line] - SUM ([shuakae]) AS [余额]
+FROM   [CInfo] [c],
+       [ZhangDan] [z]
+WHERE  [z].[yihuan] = 0 AND [z].[kadaihao] = [c].[kadaihao]
+GROUP  BY [c].[kadaihao];
+
+mianxiqi:
+select zhangdanri,huankuanri, case(
+cast((huankuanri-STRFTIME ('%d', 'now')>=0) as char)
+|| cast((zhangdanri-STRFTIME ('%d', 'now')>=0) as char))
+when '11' then huankuanri-STRFTIME ('%d', 'now')
+when '00' then julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+2 month'))-julianday(date('now'))
+else julianday(date('now', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+1 month'))-julianday(date('now')) end
+from CInfo
+
+综合：
+select t1._id,case(strftime('%d','now','localtime')-t1.huankuanri>0)
+when 1 then STRFTIME ('%m-%d',date('now','localtime','start of month','+1 month','+'|| t1.huankuanri ||' day','-1 day')) 
+else STRFTIME ('%m-%d',date('now','localtime','start of month','+'|| t1.huankuanri ||' day','-1 day')) end as huankuanriqi,t1.kadaihao, case when t2.huankuane isnull then '无需还款' else round(t2.huankuane,2) end as huankuane, case when t3.yue is null then t3.zonge else round(t3.yue,2) end as yue,t4.mianxiqi
+from CInfo t1 left join
+(SELECT kadaihao,SUM ([shuakae]) as huankuane FROM   [ZhangDan]
+WHERE  [yihuan] = 0 AND [shijian] < (
+SELECT CASE (CAST (([zhangdanri] < [huankuanri]) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now','localtime') - [zhangdanri] > 0) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now','localtime') - [huankuanri] > 0) AS [char])) 
+WHEN '110' THEN DATE ('now','localtime', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') 
+WHEN '000' THEN DATE ('now','localtime', 'start of month', '+' || [zhangdanri] || ' day', '-1 day', '-1 month') 
+WHEN '011' THEN DATE ('now','localtime', 'start of month', '+' || [zhangdanri] || ' day', '-1 day') ELSE DATE ('now','localtime') END
+FROM   [CInfo] where CInfo.kadaihao=ZhangDan.kadaihao)
+GROUP  BY [kadaihao]) t2 on t1.kadaihao=t2.kadaihao left join
+(select c.kadaihao k,gue+line as zonge, t.yue from CInfo c left join
+(select c.kadaihao as k, c.gue+c.line-SUM (z.shuakae) AS yue from CInfo c,Zhangdan z WHERE  z.yihuan = 0 AND k = z.kadaihao GROUP  BY k) t on c.kadaihao=t.k) t3 on t1.kadaihao=t3.k left join
+(select kadaihao, case(CAST (([zhangdanri] < [huankuanri]) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now','localtime') - [zhangdanri] > 0) AS [char]) 
+|| CAST ((STRFTIME ('%d', 'now','localtime') - [huankuanri] > 0) AS [char]))
+when '100' then huankuanri-STRFTIME ('%d', 'now','localtime')
+when '011' then julianday(date('now','localtime', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+2 month'))-julianday(date('now','localtime'))
+else julianday(date('now','localtime', 'start of month', '+' || [huankuanri] || ' day', '-1 day', '+1 month'))-julianday(date('now','localtime')) end as mianxiqi
+from CInfo) t4 on t1.kadaihao=t4.kadaihao
+order by huankuanriqi

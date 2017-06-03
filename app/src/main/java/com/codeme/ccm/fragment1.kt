@@ -29,7 +29,7 @@ class fragment1 : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
     private var cursor: Cursor? = null
     private var date: Date? = null
     private var kadaihao: Array<String?>? = null
-    private val uri: Uri? = null
+    private var uri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,19 +121,20 @@ class fragment1 : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
             val p = PopupMenu(context, view.tv_shijian1)
             p.menuInflater.inflate(R.menu.menu1, p.menu)
             p.setOnMenuItemClickListener { menuItem ->
+                uri = Uri.withAppendedPath(App.Uri_ZhangDan,_id)
                 when (menuItem.itemId) {
                     R.id.shanchu1 -> context.contentResolver.delete(uri!!, null, null)
                     R.id.xiugai1 -> {
-                        view.bt_jiru.text = "修改"
+                        bt_jiru.text = "修改"
                         val projection = arrayOf("shuakae", "kadaihao", "shijian", "feilv", "beizhu")
                         cursor = context.contentResolver.query(App.Uri_ZhangDan, projection,
                                 "_id =" + _id, null, null)
                         cursor!!.moveToFirst()
-                        view.et_shuakae1.setText(cursor!!.getString(0))
-                        view.et_kadaihao1.setText(cursor!!.getString(1))
-                        view.et_shijian1.setText(cursor!!.getString(2))
-                        view.et_feilv1.setText(cursor!!.getString(3))
-                        view.et_beizhu1.setText(cursor!!.getString(4))
+                        et_shuakae1.setText(cursor!!.getString(0))
+                        et_kadaihao1.setText(cursor!!.getString(1))
+                        et_shijian1.setText(cursor!!.getString(2))
+                        et_feilv1.setText(cursor!!.getString(3))
+                        et_beizhu1.setText(cursor!!.getString(4))
                     }
                 }
                 update()

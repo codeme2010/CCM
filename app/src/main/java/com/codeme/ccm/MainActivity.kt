@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openDatabase(): Boolean {
-        //        app.DATABASE_PATH=MainActivity.this.getFilesDir().toString();
+        //app.DATABASE_PATH=MainActivity.this.getFilesDir().toString();
         try {
             val dir = File(App.DATABASE_PATH)
             if (!dir.exists())
